@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CWI Results Dashboard — Cumulative Web Inc.</title>
+<meta name="description" content="Every verified CWI result, accumulated as it happens. LIVE = verified real data. Honest gaps, never invented numbers.">
+<style>
+  :root { --navy:#0a1128; --navy2:#101a3a; --gold:#d4af37; --gold-dim:#a8842c; --ink:#eef1f8; --mut:#9aa3c0; --card:#131c3f; --line:#243064; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:radial-gradient(1200px 600px at 50% -10%, #18245a 0%, var(--navy) 55%) fixed, var(--navy); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:24px 18px 80px; }
+  header { display:flex; gap:18px; align-items:center; border-bottom:1px solid var(--line); padding-bottom:20px; margin-bottom:28px; }
+  header img.logo { width:88px; height:88px; border-radius:50%; border:3px solid var(--gold); box-shadow:0 0 28px rgba(212,175,55,.35); }
+  h1 { margin:0; font-size:1.7rem; letter-spacing:.02em; }
+  h1 .crown { color:var(--gold); }
+  .sub { color:var(--mut); margin:4px 0 0; font-size:.95rem; }
+  .hero { background:linear-gradient(135deg,#1a2450,#0d1533); border:1px solid var(--gold-dim); border-radius:16px; padding:32px 28px; text-align:center; margin-bottom:32px; box-shadow:0 8px 40px rgba(212,175,55,.12); }
+  .hero .kicker { color:var(--gold); letter-spacing:.3em; font-size:.75rem; text-transform:uppercase; }
+  .hero .big { font-size:4.2rem; font-weight:800; color:#fff; margin:8px 0 4px; text-shadow:0 0 24px rgba(212,175,55,.5); }
+  .hero .asof { color:var(--mut); font-size:.9rem; }
+  .hero .def { max-width:640px; margin:14px auto 0; color:#cfd6ee; font-size:.95rem; }
+  h2 { color:var(--gold); font-size:1.25rem; margin:36px 0 6px; letter-spacing:.04em; }
+  .sec-sub { color:var(--mut); margin:0 0 16px; font-size:.92rem; }
+  .funnel { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; }
+  .stage { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .stage-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .stage-head h3 { margin:0; font-size:1rem; }
+  .stage-num { font-size:2.4rem; font-weight:800; margin:8px 0 2px; color:#fff; }
+  .stage-desc { color:var(--mut); font-size:.85rem; margin:0 0 8px; }
+  .stage-note { font-size:.8rem; color:#b9c1dd; margin:2px 0; }
+  .tag { display:inline-block; font-size:.66rem; font-weight:700; letter-spacing:.08em; padding:3px 8px; border-radius:999px; white-space:nowrap; }
+  .tag-live { background:rgba(46,204,113,.15); color:#2ecc71; border:1px solid #2ecc71; }
+  .tag-measured { background:rgba(241,196,15,.12); color:#f1c40f; border:1px solid #f1c40f; }
+  .tag-gap { background:rgba(149,165,166,.12); color:#a7b0c4; border:1px solid #7f8ca3; }
+  .tag-target { background:rgba(155,89,182,.14); color:#c39bd3; border:1px solid #9b59b6; }
+  .receipts { list-style:none; padding:0; margin:0; display:grid; gap:10px; }
+  .receipt { background:var(--card); border:1px solid var(--line); border-left:3px solid #2ecc71; border-radius:10px; padding:12px 14px; }
+  .receipt-top { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:4px; }
+  .receipt-date { color:var(--mut); font-size:.8rem; font-family:ui-monospace,monospace; }
+  .receipt-title { font-weight:600; }
+  .receipt-meta { font-size:.82rem; color:var(--mut); margin-top:4px; }
+  a { color:var(--gold); }
+  table.targets { width:100%; border-collapse:collapse; background:var(--card); border-radius:12px; overflow:hidden; font-size:.9rem; }
+  table.targets th, table.targets td { padding:12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+  table.targets th { color:var(--gold); font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; }
+  .num { font-weight:700; font-size:1.05rem; }
+  .gaps { list-style:none; padding:0; margin:0; display:grid; gap:10px; }
+  .gap { background:var(--card); border:1px dashed #7f8ca3; border-radius:10px; padding:12px 14px; }
+  .gap-signal { font-weight:700; }
+  .gap-why { color:var(--mut); font-size:.88rem; margin-top:2px; }
+  .gap-fix { font-size:.85rem; margin-top:6px; color:#cfd6ee; }
+  .legend { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; font-size:.88rem; color:#cfd6ee; }
+  .signal-line { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-size:.9rem; }
+  footer { margin-top:48px; border-top:1px solid var(--line); padding-top:16px; color:var(--mut); font-size:.82rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img class="logo" src="brand/cwi-logo.jpg" alt="Cumulative Web Inc. logo badge">
+    <div>
+      <h1><span class="crown">♛</span> CWI RESULTS DASHBOARD</h1>
+      <p class="sub">Cumulative Web Inc. — every verified result, accumulated as it happens. Refreshes every 30 minutes. Machine-readable: <a href="results.json">results.json</a> (schema cwi.results/1.0).</p>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="kicker">★ The Metric ★</div>
+    <div class="big">0</div>
+    <div style="margin:4px 0"><span class="tag tag-live">LIVE · verified</span></div>
+    <div class="asof">as of 2026-09-17T11:31:12.509Z · schema cwi.results/1.0</div>
+    <p class="def"><strong>Verified external equips</strong> — an external agent identity attached to a real CWI tool call/equip, with receipt. The single metric that matters most. Internal (CWI's own agents) equips are not counted here.</p>
+  </section>
+
+  <h2>♛ The funnel</h2>
+  <p class="sec-sub">Each stage: what's measured vs what's verified vs what's still a gap. "—" means unmeasured at $0 — never invented.</p>
+  <div class="funnel">
+<div class="stage">
+      <div class="stage-head"><h3>Impression</h3><span class="tag tag-measured">MEASURED · not human-verified</span></div>
+      <div class="stage-num">6</div>
+      <p class="stage-desc">Someone saw a CWI surface (repo view, post, page).</p>
+      <p class="stage-note"><strong>Source:</strong> GitHub traffic API, 26/26 repos, 14d</p>
+      <p class="stage-note">Repo page-view proxy. Bot/scraper noise not separable at $0 — not claimed as human interest.</p>
+    </div>
+<div class="stage">
+      <div class="stage-head"><h3>Click</h3><span class="tag tag-gap">GAP · unmeasured</span></div>
+      <div class="stage-num">—</div>
+      <p class="stage-desc">Clicked through to a tool, repo, or listing.</p>
+      <p class="stage-note"><strong>Source:</strong> none</p>
+      <p class="stage-note">No click-through signal at $0 (see gaps).</p>
+    </div>
+<div class="stage">
+      <div class="stage-head"><h3>Install</h3><span class="tag tag-measured">MEASURED · not human-verified</span></div>
+      <div class="stage-num">4795</div>
+      <p class="stage-desc">Cloned a repo / fetched a tool package.</p>
+      <p class="stage-note"><strong>Source:</strong> GitHub traffic API, 26/26 repos, 14d</p>
+      <p class="stage-note">Clone spikes flagged as bot/scraper noise 2026-09-17 — not claimed as human installs.</p>
+    </div>
+<div class="stage">
+      <div class="stage-head"><h3>First tool call</h3><span class="tag tag-gap">GAP · unmeasured</span></div>
+      <div class="stage-num">—</div>
+      <p class="stage-desc">An external agent called a CWI tool for the first time.</p>
+      <p class="stage-note"><strong>Source:</strong> none</p>
+      <p class="stage-note">No tool-call telemetry until MCP server caller logging ships (see gaps).</p>
+    </div>
+<div class="stage">
+      <div class="stage-head"><h3>Equip</h3><span class="tag tag-live">LIVE · verified</span></div>
+      <div class="stage-num">0</div>
+      <p class="stage-desc">An external agent identity attached to a real CWI tool call/equip, with receipt.</p>
+      <p class="stage-note"><strong>Source:</strong> gear registry equipped_by (18 internal identities, 0 external) + ledger CWI-HANDOFF events (0 seen, store v1541)</p>
+      <p class="stage-note">Verified by adoption scan 2026-09-17 (receipt r-external-equips-20260917). Internal CWI-agent equips excluded.</p>
+    </div>
+<div class="stage">
+      <div class="stage-head"><h3>Repeat use</h3><span class="tag tag-gap">GAP · unmeasured</span></div>
+      <div class="stage-num">—</div>
+      <p class="stage-desc">The same external identity used a CWI tool again.</p>
+      <p class="stage-note"><strong>Source:</strong> none</p>
+      <p class="stage-note">No repeat-use telemetry at $0 (see gaps).</p>
+    </div>
+<div class="stage">
+      <div class="stage-head"><h3>Revenue</h3><span class="tag tag-live">LIVE · verified</span></div>
+      <div class="stage-num">$0.00</div>
+      <p class="stage-desc">Dollars settled to CWI from agent tooling.</p>
+      <p class="stage-note"><strong>Source:</strong> standing revenue check 2026-09-17 — no live sales channel (Gumroad product unpublished)</p>
+      <p class="stage-note">No automated sales data path yet (see gaps).</p>
+    </div>
+  </div>
+
+  <h2>♛ Verified receipts</h2>
+  <p class="sec-sub">Append-only, newest first. Every claim below traces to a source you can check.</p>
+  <ul class="receipts">
+<li class="receipt">
+      <div class="receipt-top"><span class="receipt-date">2026-09-17</span><span class="tag tag-live">LIVE · verified</span></div>
+      <div class="receipt-title">Sync catalog reconciled — 3 of 24 tracks measured</div>
+      <div class="receipt-meta">verified by parent orchestrator 2026-09-17 · <a href="https://github.com/CumulativeWebInc/cwi-sync" target="_blank" rel="noopener">evidence ↗</a></div>
+    </li>
+<li class="receipt">
+      <div class="receipt-top"><span class="receipt-date">2026-09-17</span><span class="tag tag-live">LIVE · verified</span></div>
+      <div class="receipt-title">3 Cyanite track analyses completed</div>
+      <div class="receipt-meta">verified by parent orchestrator 2026-09-17 · <a href="https://github.com/CumulativeWebInc/cwi-sonic-search" target="_blank" rel="noopener">evidence ↗</a></div>
+    </li>
+<li class="receipt">
+      <div class="receipt-top"><span class="receipt-date">2026-09-17</span><span class="tag tag-live">LIVE · verified</span></div>
+      <div class="receipt-title">GitHub 14-day clone spikes flagged as bot/scraper noise — NOT claimed as interest</div>
+      <div class="receipt-meta">verified by KingCode traffic review 2026-09-17 · <a href="https://github.com/CumulativeWebInc/gear-ledger-3d-mockup/graphs/traffic" target="_blank" rel="noopener">evidence ↗</a></div>
+    </li>
+<li class="receipt">
+      <div class="receipt-top"><span class="receipt-date">2026-09-17</span><span class="tag tag-live">LIVE · verified</span></div>
+      <div class="receipt-title">X post live (@cumulativebr, 2026-09-17)</div>
+      <div class="receipt-meta">verified by parent orchestrator 2026-09-17 · <a href="https://x.com/cumulativebr" target="_blank" rel="noopener">evidence ↗</a></div>
+    </li>
+<li class="receipt">
+      <div class="receipt-top"><span class="receipt-date">2026-09-17</span><span class="tag tag-live">LIVE · verified</span></div>
+      <div class="receipt-title">Moltbook app-shelf announcement live — 0 upvotes / 0 comments as of ~07:25 EDT</div>
+      <div class="receipt-meta">verified by Moltbook API read 2026-09-17 · <a href="https://moltbook.com/post/2520bf64-58d2-49e2-8c28-b943dee28bfd" target="_blank" rel="noopener">evidence ↗</a></div>
+    </li>
+<li class="receipt">
+      <div class="receipt-top"><span class="receipt-date">2026-09-17</span><span class="tag tag-live">LIVE · verified</span></div>
+      <div class="receipt-title">Gumroad revenue $0.00 — product unpublished, no sales channel live as of 2026-09-17</div>
+      <div class="receipt-meta">verified by standing revenue check 2026-09-17 · <a href="https://github.com/CumulativeWebInc/cwi-results" target="_blank" rel="noopener">evidence ↗</a></div>
+    </li>
+<li class="receipt">
+      <div class="receipt-top"><span class="receipt-date">2026-09-17</span><span class="tag tag-live">LIVE · verified</span></div>
+      <div class="receipt-title">External equips: 0 — adoption scan across the gear registry (equipped_by internal-only / empty)</div>
+      <div class="receipt-meta">verified by KingCode adoption scan 2026-09-17 · <a href="https://github.com/CumulativeWebInc/gear-ledger" target="_blank" rel="noopener">evidence ↗</a></div>
+    </li>
+  </ul>
+
+  <h2>♛ Live signals</h2>
+  <p class="sec-sub">Re-checked on every refresh — not receipts, just the current reading.</p>
+<p class="signal-line">Moltbook app-shelf post: <strong>0 upvotes / 0 comments</strong> (checked 2026-09-17T11:31:12.509Z) · <a href="https://moltbook.com/post/2520bf64-58d2-49e2-8c28-b943dee28bfd" target="_blank" rel="noopener">view post ↗</a></p>
+
+  <h2>♛ Targets vs actuals</h2>
+  <p class="sec-sub">Targets are labeled targets. Actuals are labeled verified. Proposed targets are pending owner sign-off.</p>
+  <table class="targets">
+    <thead><tr><th>Name</th><th>Target</th><th>Actual</th><th>Deadline</th><th>Status</th></tr></thead>
+    <tbody>
+<tr>
+      <td>First external equip</td>
+      <td class="num">1<br><span class="tag tag-target">TARGET · not actual</span></td>
+      <td class="num">0 (verified)<br><span class="tag tag-measured">MEASURED · not human-verified</span></td>
+      <td>open</td>
+      <td>pending — proposed target, needs owner sign-off</td>
+    </tr>
+<tr>
+      <td>Gumroad first sale</td>
+      <td class="num">$20–30<br><span class="tag tag-target">TARGET · not actual</span></td>
+      <td class="num">$0.00 (verified)<br><span class="tag tag-measured">MEASURED · not human-verified</span></td>
+      <td>open</td>
+      <td>pending — proposed target, needs owner sign-off</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <h2>♛ Honest gaps</h2>
+  <p class="sec-sub">Signals we cannot measure at $0 yet — listed so nobody fills them with imagination.</p>
+  <ul class="gaps">
+<li class="gap">
+      <div class="gap-signal">Dashboard pageviews</div>
+      <div class="gap-why">GitHub Pages serves no analytics; the traffic API covers repos, not the dashboard page itself.</div>
+      <div class="gap-fix"><strong>Cheapest fix:</strong> Ship a $0 client-side pageview beacon to a CWI endpoint (needs a receiver build).</div>
+    </li>
+<li class="gap">
+      <div class="gap-signal">X post metrics</div>
+      <div class="gap-why">X is login-walled with no $0 API path for post-level metrics.</div>
+      <div class="gap-fix"><strong>Cheapest fix:</strong> Manual X Analytics export by Black, transcribed into results.json.</div>
+    </li>
+<li class="gap">
+      <div class="gap-signal">Gumroad sales</div>
+      <div class="gap-why">Gumroad product is unpublished; no API key wired into the publish script.</div>
+      <div class="gap-fix"><strong>Cheapest fix:</strong> Wire a Gumroad API key into the publish script once the product is live.</div>
+    </li>
+<li class="gap">
+      <div class="gap-signal">MCP caller identity (first tool call)</div>
+      <div class="gap-why">cwi-mcp-server has no caller logging yet.</div>
+      <div class="gap-fix"><strong>Cheapest fix:</strong> Ship tool-call logging on cwi-mcp-server.</div>
+    </li>
+<li class="gap">
+      <div class="gap-signal">Click-through</div>
+      <div class="gap-why">No UTM/referral capture on outbound CTAs.</div>
+      <div class="gap-fix"><strong>Cheapest fix:</strong> UTM-tagged links + a referral log in results.json.</div>
+    </li>
+<li class="gap">
+      <div class="gap-signal">Human vs bot in repo traffic</div>
+      <div class="gap-why">The traffic API exposes no user-agent/referrer breakdown.</div>
+      <div class="gap-fix"><strong>Cheapest fix:</strong> Pages-side beacon + README links so real human clicks become measurable.</div>
+    </li>
+  </ul>
+
+  <h2>♛ Truth-label discipline</h2>
+  <div class="legend">
+    <p><span class="tag tag-live">LIVE · verified</span> — real data, checked against a source with a receipt.</p>
+    <p><span class="tag tag-measured">MEASURED · not human-verified</span> — real API numbers (e.g. GitHub traffic) that may include bots; not claimed as human interest.</p>
+    <p><span class="tag tag-gap">GAP · unmeasured</span> — no $0 signal exists yet. Shown as "—", never as a number.</p>
+    <p><span class="tag tag-target">TARGET · not actual</span> — a goal, not a result.</p>
+    <p style="margin-bottom:0">Empty states stay empty and honest. The 9/17 scan verified <strong>0</strong> external equips — zero is a verified finding here, with a receipt, not a placeholder.</p>
+  </div>
+
+  <footer>
+    <span>♛ Cumulative Web Inc. — results, not promises.</span>
+    <span>as of 2026-09-17T11:31:12.509Z · <a href="results.json">results.json</a> · <a href="https://github.com/CumulativeWebInc/cwi-results">repo</a></span>
+  </footer>
+</div>
+</body>
+</html>
