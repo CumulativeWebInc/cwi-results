@@ -36,7 +36,7 @@
       to keep it on your home screen like an app.
     </div>
     <a class="enter" id="enterBtn" href="#">Enter now</a>
-    <p class="fine">This link works until 3:24 PM ET, Sep 20.</p>
+    <p class="fine">This link works until 11:26 AM ET, Sep 20.</p>
   </div>
   <div class="card" id="expired" hidden>
     <div class="crown">👑</div>
@@ -45,12 +45,9 @@
   </div>
 <script>
 (function () {
-  var TOKEN = "6f124f72f6c5739aae96a89cf0ed0ec7";
-  var EXPIRES_AT = 1789917868000;
+  var EXPIRES_AT = 1789918010000;
   var TARGET = "https://cumulativewebinc.github.io/gear-ledger-3d-mockup/";
-  var t = null;
-  try { t = new URLSearchParams(window.location.search).get("t"); } catch (e) {}
-  var ok = (t === TOKEN) && (Date.now() < EXPIRES_AT);
+  var ok = Date.now() < EXPIRES_AT;
   document.getElementById(ok ? "valid" : "expired").hidden = false;
   if (ok) {
     document.getElementById("enterBtn").href = TARGET;
