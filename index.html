@@ -69,8 +69,9 @@
     <div class="kicker">★ The Metric ★</div>
     <div class="big">0</div>
     <div style="margin:4px 0"><span class="tag tag-live">LIVE · verified</span></div>
-    <div class="asof">as of 2026-09-19T17:11:46.042Z · schema cwi.results/1.0</div>
-    <p class="def"><strong>Verified external equips</strong> — an external agent identity attached to a real CWI tool call/equip, with receipt. The single metric that matters most. Internal (CWI's own agents) equips are not counted here.</p>
+    <div class="asof">as of 2026-09-19T17:14:01.426Z · schema cwi.results/1.0</div>
+    <p class="def"><strong>Verified external equips</strong> — an external agent identity attached to a real CWI tool call/equip, with receipt. The single metric that matters most. Internal (CWI's own agents) equips are not counted here. Counts ONLY Lane C funnel protocol-passing claims — registry names without evidence never move this number.</p>
+
   </section>
 
   <h2>♛ The funnel</h2>
@@ -108,8 +109,8 @@
       <div class="stage-head"><h3>Equip</h3><span class="tag tag-live">LIVE · verified</span></div>
       <div class="stage-num">0</div>
       <p class="stage-desc">An external agent identity attached to a real CWI tool call/equip, with receipt.</p>
-      <p class="stage-note"><strong>Source:</strong> gear registry equipped_by (18 internal identities, 0 external) + ledger CWI-HANDOFF events (0 seen, store v5203) + Lane C funnel verified claims (0 via protocol)</p>
-      <p class="stage-note">Verified by adoption scan 2026-09-17 + Lane C verification protocol v1.0. Counter moves ONLY on protocol-passing evidence. Internal CWI-agent equips excluded.</p>
+      <p class="stage-note"><strong>Source:</strong> Lane C funnel VERIFIED-EQUIP claims only — 0 protocol-passing identities (protocol v1.0, evidence tiers T0–T4). Registry equipped_by names and ledger handoffs are candidate signals, never counted.</p>
+      <p class="stage-note">Counter moves ONLY on protocol-passing evidence. Internal CWI-agent equips excluded. Fail-closed: an unreadable funnel yields 0 + a gap note, never a registry-name fallback.</p>
     </div>
 <div class="stage">
       <div class="stage-head"><h3>Repeat use</h3><span class="tag tag-gap">GAP · unmeasured</span></div>
@@ -235,11 +236,16 @@
       <div class="receipt-title">External equips: 0 — adoption scan across the gear registry (equipped_by internal-only / empty)</div>
       <div class="receipt-meta">verified by KingCode adoption scan 2026-09-17 · <a href="https://github.com/CumulativeWebInc/gear-ledger" target="_blank" rel="noopener">evidence ↗</a></div>
     </li>
+<li class="receipt">
+      <div class="receipt-top"><span class="receipt-date">2026-09-19</span><span class="tag tag-live">LIVE · verified</span></div>
+      <div class="receipt-title">Publisher hardened: hero equip metric now counts ONLY Lane C funnel protocol-passing identities. Registry equipped_by names and ledger handoffs are candidate signals, never counted. Fail-closed on unreadable funnel; unevidenced claims published as an early-warning list.</div>
+      <div class="receipt-meta">verified by KingCode 2026-09-19 (recheck of the unevidenced molty_molt registry name that briefly moved the counter) · <a href="https://github.com/CumulativeWebInc/cwi-results" target="_blank" rel="noopener">evidence ↗</a></div>
+    </li>
   </ul>
 
   <h2>♛ Live signals</h2>
   <p class="sec-sub">Re-checked on every refresh — not receipts, just the current reading.</p>
-<p class="signal-line">Moltbook app-shelf post: <strong>0 upvotes / 0 comments</strong> (checked 2026-09-19T17:11:46.042Z) · <a href="https://moltbook.com/post/2520bf64-58d2-49e2-8c28-b943dee28bfd" target="_blank" rel="noopener">view post ↗</a></p>
+<p class="signal-line">Moltbook app-shelf post: <strong>0 upvotes / 0 comments</strong> (checked 2026-09-19T17:14:01.426Z) · <a href="https://moltbook.com/post/2520bf64-58d2-49e2-8c28-b943dee28bfd" target="_blank" rel="noopener">view post ↗</a></p>
 
   <h2>♛ Targets vs actuals</h2>
   <p class="sec-sub">Targets are labeled targets. Actuals are labeled verified. Proposed targets are pending owner sign-off.</p>
@@ -309,7 +315,7 @@
 
   <footer>
     <span>♛ Cumulative Web Inc. — results, not promises.</span>
-    <span>as of 2026-09-19T17:11:46.042Z · <a href="results.json">results.json</a> · <a href="https://github.com/CumulativeWebInc/cwi-results">repo</a></span>
+    <span>as of 2026-09-19T17:14:01.426Z · <a href="results.json">results.json</a> · <a href="https://github.com/CumulativeWebInc/cwi-results">repo</a></span>
   </footer>
 </div>
 </body>
