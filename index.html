@@ -54,6 +54,62 @@
   .signal-line { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-size:.9rem; }
   footer { margin-top:48px; border-top:1px solid var(--line); padding-top:16px; color:var(--mut); font-size:.82rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "name": "Cumulative Web Inc",
+      "url": "https://cumulativeweb.com/",
+      "email": "hp@cumulativeweb.com",
+      "logo": "https://cumulativewebinc.github.io/cwi-results/brand/cwi-logo.jpg"
+    },
+    {
+      "@type": "WebSite",
+      "name": "CWI Results Dashboard",
+      "url": "https://cumulativewebinc.github.io/cwi-results/",
+      "inLanguage": "en",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cumulative Web Inc",
+        "url": "https://cumulativeweb.com/"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "name": "CWI Results Dashboard \u2014 Cumulative Web Inc.",
+      "url": "https://cumulativewebinc.github.io/cwi-results/",
+      "description": "Every verified CWI result, accumulated as it happens. LIVE = verified real data. Honest gaps, never invented numbers.",
+      "inLanguage": "en",
+      "about": {
+        "@type": "Organization",
+        "name": "Cumulative Web Inc",
+        "url": "https://cumulativeweb.com/"
+      }
+    },
+    {
+      "@type": "Dataset",
+      "name": "CWI Results ledger",
+      "url": "https://cumulativewebinc.github.io/cwi-results/results.json",
+      "description": "Machine-readable ledger of verified Cumulative Web Inc results: receipts, metrics, gaps, and sources.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cumulative Web Inc",
+        "url": "https://cumulativeweb.com/"
+      },
+      "inLanguage": "en",
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "contentUrl": "https://cumulativewebinc.github.io/cwi-results/results.json",
+          "encodingFormat": "application/json"
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <div class="wrap">
