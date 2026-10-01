@@ -51,11 +51,24 @@ jobs:
             echo "outage issue already open; skipping duplicate"
             exit 0
           fi
-          PREFIX=""; LABELS="outage"
-          if [ "$DRY_RUN" = "true" ]; then PREFIX="[TEST] "; LABELS="test"; fi
-          gh issue create --title "${PREFIX}[OUTAGE] CWI agent-VM outage detected by reboot witness" \
-            --label "$LABELS" \
-            --body "<!-- cwi-witness-outage -->
+          if [ "$DRY_RUN" = "true" ]; then
+            # TEST MODE: unmistakable banner in the body, not just the title —
+            # the email notification leads with body text, so the title prefix
+            # alone is not enough to prevent a false alarm.
+            gh issue create --title "[TEST] [OUTAGE] CWI agent-VM outage detected by reboot witness" \
+              --label "test" \
+              --body "<!-- cwi-witness-outage -->
+          # THIS IS A TEST — NOT A REAL OUTAGE
+
+          This issue was opened by a dry-run of the reboot-witness watch workflow, only to prove the phone notification path works. Every detail below is MOCKED data. The CWI agent VM is fine.
+
+          - Event: $EVENT (simulated)
+          - Detail: $DETAIL (simulated)
+          - Witness: https://cwi-reboot-witness.hp-ace.workers.dev/status"
+          else
+            gh issue create --title "[OUTAGE] CWI agent-VM outage detected by reboot witness" \
+              --label "outage" \
+              --body "<!-- cwi-witness-outage -->
           The reboot witness recorded a **new outage** of the CWI agent VM.
 
           - Event: $EVENT
@@ -64,6 +77,7 @@ jobs:
 
           This issue was opened automatically by the reboot-witness watch workflow.
           It closes itself when the witness reports the heartbeat has resumed."
+          fi
 
       - name: Close issue on recovery
         if: steps.check.outputs.event == 'RECOVERED'
