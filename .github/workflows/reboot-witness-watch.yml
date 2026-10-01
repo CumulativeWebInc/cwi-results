@@ -1,0 +1,90 @@
+name: reboot-witness watch
+
+# $0 VM-outage notifier. Every 5 minutes it reads the reboot-witness Worker's
+# /status endpoint; when the witness records a NEW outage it opens a GitHub
+# issue (which notifies repo watchers = the founder's phone via GitHub).
+# No new accounts, no extra heartbeat traffic, nothing for the founder to do.
+# Manual "dry_run" dispatch proves the notification path with a mocked outage
+# and a [TEST] issue — never a real outage claim.
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Test mode: simulate an outage, open a [TEST] issue, never touch real state"
+        type: boolean
+        default: false
+
+concurrency:
+  group: witness-watch
+  cancel-in-progress: false
+
+permissions:
+  issues: write
+  contents: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check witness status
+        id: check
+        env:
+          WITNESS_URL: https://cwi-reboot-witness.hp-ace.workers.dev
+          STATE_PATH: .github/witness-watch-state.json
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: python3 .github/scripts/witness-watch.py
+
+      - name: Open outage issue
+        if: steps.check.outputs.event == 'NEW_OUTAGE' || steps.check.outputs.event == 'STILL_OUT'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT: ${{ steps.check.outputs.event }}
+          DETAIL: ${{ steps.check.outputs.detail }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" != "true" ] && [ "$(gh issue list --label outage --state open --json number --jq length)" -gt 0 ]; then
+            echo "outage issue already open; skipping duplicate"
+            exit 0
+          fi
+          PREFIX=""; LABELS="outage"
+          if [ "$DRY_RUN" = "true" ]; then PREFIX="[TEST] "; LABELS="test"; fi
+          gh issue create --title "${PREFIX}[OUTAGE] CWI agent-VM outage detected by reboot witness" \
+            --label "$LABELS" \
+            --body "<!-- cwi-witness-outage -->
+          The reboot witness recorded a **new outage** of the CWI agent VM.
+
+          - Event: $EVENT
+          - Detail: $DETAIL
+          - Witness: https://cwi-reboot-witness.hp-ace.workers.dev/status
+
+          This issue was opened automatically by the reboot-witness watch workflow.
+          It closes itself when the witness reports the heartbeat has resumed."
+
+      - name: Close issue on recovery
+        if: steps.check.outputs.event == 'RECOVERED'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NUM=$(gh issue list --label outage --state open --json number,body --jq '.[] | select(.body | contains("cwi-witness-outage")) | .number' | head -1)
+          if [ -n "$NUM" ]; then
+            gh issue close "$NUM" --comment "Heartbeat resumed — the reboot witness reports the outage is over."
+          else
+            echo "no open outage issue found"
+          fi
+
+      - name: Persist watcher state
+        if: inputs.dry_run != true
+        run: |
+          git config user.name "cwi-witness-watch"
+          git config user.email "watch@cumulativeweb.com"
+          git add .github/witness-watch-state.json
+          if ! git diff --cached --quiet; then
+            git commit -m "witness watch: state update [skip ci]" && git push
+          else
+            echo "state unchanged"
+          fi
